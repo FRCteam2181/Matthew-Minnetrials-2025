@@ -4,75 +4,67 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import static frc.robot.Constants.DriveConstants.*;
+
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.DriveConstants;
 
-// Class to drive the robot over CAN
+/* This class declares the subsystem for the robot drivetrain if controllers are connected via CAN. Make sure to go to
+ * RobotContainer and uncomment the line declaring this subsystem and comment the line for PWMDrivetrain.
+ *
+ * The subsystem contains the objects for the hardware contained in the mechanism and handles low level logic
+ * for control. Subsystems are a mechanism that, when used in conjuction with command "Requirements", ensure
+ * that hardware is only being used by 1 command at a time.
+ */
 public class CANDriveSubsystem extends SubsystemBase {
-  private final SparkMax leftLeader;
-  private final SparkMax leftFollower;
-  private final SparkMax rightLeader;
-  private final SparkMax rightFollower;
+  /*Class member variables. These variables represent things the class needs to keep track of and use between
+  different method calls. */
+  DifferentialDrive m_drivetrain;
 
-  private final DifferentialDrive drive;
-
+  /*Constructor. This method is called when an instance of the class is created. This should generally be used to set up
+   * member variables and perform any configuration or set up necessary on hardware.
+   */
   public CANDriveSubsystem() {
-    // create brushed motors for drive
-    leftLeader = new SparkMax(DriveConstants.LEFT_LEADER_ID, MotorType.kBrushed);
-    leftFollower = new SparkMax(DriveConstants.LEFT_FOLLOWER_ID, MotorType.kBrushed);
-    rightLeader = new SparkMax(DriveConstants.RIGHT_LEADER_ID, MotorType.kBrushed);
-    rightFollower = new SparkMax(DriveConstants.RIGHT_FOLLOWER_ID, MotorType.kBrushed);
+    WPI_TalonSRX leftFront = new WPI_TalonSRX(LEFT_LEADER_ID);
+    WPI_VictorSPX leftRear = new WPI_VictorSPX(LEFT_FOLLOWER_ID);
+    WPI_TalonSRX rightFront = new WPI_TalonSRX(RIGHT_LEADER_ID);
+    WPI_VictorSPX rightRear = new WPI_VictorSPX(RIGHT_FOLLOWER_ID);
+    
 
-    // set up differential drive class
-    drive = new DifferentialDrive(leftLeader, rightLeader);
+    
+    /*Sets current limits for the drivetrain motors. This helps reduce the likelihood of wheel spin, reduces motor heating
+     *at stall (Drivetrain pushing against something) and helps maintain battery voltage under heavy demand */
+    leftFront.configPeakCurrentLimit(DRIVE_MOTOR_CURRENT_LIMIT);
+    rightFront.configPeakCurrentLimit(DRIVE_MOTOR_CURRENT_LIMIT);
 
-    // Set can timeout. Because this project only sets parameters once on
-    // construction, the timeout can be long without blocking robot operation. Code
-    // which sets or gets parameters during operation may need a shorter timeout.
-    leftLeader.setCANTimeout(250);
-    rightLeader.setCANTimeout(250);
-    leftFollower.setCANTimeout(250);
-    rightFollower.setCANTimeout(250);
 
-    // Create the configuration to apply to motors. Voltage compensation
-    // helps the robot perform more similarly on different
-    // battery voltages (at the cost of a little bit of top speed on a fully charged
-    // battery). The current limit helps prevent tripping
-    // breakers.
-    SparkMaxConfig config = new SparkMaxConfig();
-    config.voltageCompensation(12);
-    config.smartCurrentLimit(DriveConstants.DRIVE_MOTOR_CURRENT_LIMIT);
+    // Set the rear motors to follow the front motors.
+    leftRear.follow(leftFront);
+    rightRear.follow(rightFront);
 
-    // Set configuration to follow leader and then apply it to corresponding
-    // follower. Resetting in case a new controller is swapped
-    // in and persisting in case of a controller reset due to breaker trip
-    config.follow(leftLeader);
-    leftFollower.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    config.follow(rightLeader);
-    rightFollower.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    // Invert the left side so both side drive forward with positive motor outputs
+    leftFront.setInverted(false);
+    rightFront.setInverted(true);
+    leftRear.setInverted(false);
+    rightRear.setInverted(true);
 
-    // Remove following, then apply config to right leader
-    config.disableFollowerMode();
-    rightLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    // Set conifg to inverted and then apply to left leader. Set Left side inverted
-    // so that postive values drive both sides forward
-    config.inverted(true);
-    leftLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    // Put the front motors into the differential drive object. This will control all 4 motors with
+    // the rears set to follow the fronts
+    m_drivetrain = new DifferentialDrive(leftFront, rightFront);
+  }
+
+  /*Method to control the drivetrain using arcade drive. Arcade drive takes a speed in the X (forward/back) direction
+   * and a rotation about the Z (turning the robot about it's center) and uses these to control the drivetrain motors */
+  public void arcadeDrive(double speed, double rotation) {
+    m_drivetrain.arcadeDrive(speed, rotation);
   }
 
   @Override
   public void periodic() {
-  }
-
-  // sets the speed of the drive motors
-  public void driveArcade(double xSpeed, double zRotation) {
-    drive.arcadeDrive(xSpeed, zRotation);
+    /*This method will be called once per scheduler run. It can be used for running tasks we know we want to update each
+     * loop such as processing sensor data. Our drivetrain is simple so we don't have anything to put here */
   }
 }

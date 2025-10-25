@@ -35,7 +35,7 @@ public class DriveCommand extends Command {
   // Runs every cycle while the command is scheduled (~50 times per second)
   @Override
   public void execute() {
-    driveSubsystem.driveArcade(xSpeed.getAsDouble(), zRotation.getAsDouble());
+    driveSubsystem.arcadeDrive(xSpeed.getAsDouble(), zRotation.getAsDouble());
   }
 
   // Runs each time the command ends via isFinished or being interrupted.
