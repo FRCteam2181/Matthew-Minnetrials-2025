@@ -32,7 +32,7 @@ public class RollerCommand extends Command {
   @Override
   public void execute() {
     // Run the roller motor at the desired speed
-    rollerSubsystem.runRoller(forward.getAsDouble(), reverse.getAsDouble());
+    //rollerSubsystem.runRoller(forward.getAsDouble(), reverse.getAsDouble());
   }
 
   // Runs each time the command ends via isFinished or being interrupted.

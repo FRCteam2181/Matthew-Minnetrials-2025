@@ -62,6 +62,15 @@ public class CANDriveSubsystem extends SubsystemBase {
     m_drivetrain.arcadeDrive(speed, rotation);
   }
 
+  //Testing curvature drive stuff to see if it will help
+  // if not, delete
+  public void curvatureDrive(double speed, double rotation){
+    m_drivetrain.curvatureDrive(speed, rotation, false);
+  }
+  public void tankDrive(double leftSpeed, double rightSpeed){
+    m_drivetrain.tankDrive(leftSpeed, rightSpeed);
+  }
+
   @Override
   public void periodic() {
     /*This method will be called once per scheduler run. It can be used for running tasks we know we want to update each
