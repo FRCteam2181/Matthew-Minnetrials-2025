@@ -40,6 +40,8 @@ public class CANDriveSubsystem extends SubsystemBase {
     leftFront.configPeakCurrentLimit(DRIVE_MOTOR_CURRENT_LIMIT);
     rightFront.configPeakCurrentLimit(DRIVE_MOTOR_CURRENT_LIMIT);
 
+    // Voltage Compensation
+    leftFront.voltageCompensation(12);
 
     // Set the rear motors to follow the front motors.
     leftRear.follow(leftFront);
@@ -50,6 +52,20 @@ public class CANDriveSubsystem extends SubsystemBase {
     rightFront.setInverted(true);
     leftRear.setInverted(false);
     rightRear.setInverted(true);
+
+
+    // configs
+    leftLeader.configVoltageCompSaturation(12);
+    leftLeader.enableVoltageCompensation(true);
+
+    leftFollower.configVoltageCompSaturation(12);
+    leftFollower.enableVoltageCompensation(true);
+
+    rightLeader.configVoltageCompSaturation(12);
+    rightLeader.enableVoltageCompensation(true);
+
+    rightFollower.configVoltageCompSaturation(12);
+    rightFollower.enableVoltageCompensation(true);
 
     // Put the front motors into the differential drive object. This will control all 4 motors with
     // the rears set to follow the fronts
