@@ -90,8 +90,10 @@ public class RobotContainer {
             .whileTrue(rollerSubsystem.c_rollerIntakeCommand());
     driverController.x()
             .whileTrue(rollerSubsystem.c_rollerReverseIntakeCommand());
-    driverController.y()
-            .whileTrue(new RunCommand(() -> driveSubsystem.arcadeDrive(0.5, 0), driveSubsystem).withTimeout(1));
+    driverController.b()
+            .whileTrue(new RunCommand(() -> driveSubsystem.tankDrive(1, 1), driveSubsystem).withTimeout(1));
+    driverController.rightTrigger()
+            .whileTrue(new RunCommand(() -> driveSubsystem.tankDrive(0.75, 0.75), driveSubsystem).withTimeout(1));
 
     driverController.rightBumper()
             .whileTrue(rollerSubsystem.c_rotateArmUpCommand());
@@ -106,7 +108,7 @@ public class RobotContainer {
     // joystick matches the WPILib convention of counter-clockwise positive
     driveSubsystem.setDefaultCommand(new DriveCommand(
         () -> -driverController.getLeftY() *
-            (driverController.getHID().getRightBumperButton() ? 1 : 0.5),
+            (driverController.getHID().getYButton() ? 1 : 0.5),
         () -> -driverController.getRightX(),
         driveSubsystem));
 
@@ -134,7 +136,8 @@ public class RobotContainer {
                   .andThen(new RunCommand(() -> driveSubsystem.tankDrive(0.838754514641, 0.910853740518)).withTimeout(5));
                   //.andThen(rollerSubsystem.c_rollerIntakeCommand().withTimeout(0.5));*/
     // 90 degree turn at 0.5 speed = 0.77 seconds
-    // 34 inches/second at 0.5 speed
+    // 29.5 inches/second at 0.5 speed
+    // 82 inches/second at 0.75 speed (???????)
 
     // START ON OTHER SIDE OF THE PLATFORM:
 
@@ -172,22 +175,22 @@ public class RobotContainer {
   }
 
   public Command getLeftAutonomousCommand(){
-    return new ParallelDeadlineGroup(new RunCommand(() -> driveSubsystem.tankDrive(0.668419340845, 0.875145867316), driveSubsystem).withTimeout(2.5), rollerSubsystem.c_rotateArmUpCommand())
+    return new ParallelDeadlineGroup(new RunCommand(() -> driveSubsystem.tankDrive(0.668419340845, 0.875145867316), driveSubsystem).withTimeout(1.1), rollerSubsystem.c_rotateArmUpCommand())
                       .andThen(new ParallelDeadlineGroup(rollerSubsystem.c_rollerReverseIntakeCommand().withTimeout(0.5)))
-                      .andThen(new ParallelDeadlineGroup(new RunCommand(() -> driveSubsystem.arcadeDrive(-0.5, 0), driveSubsystem).withTimeout(0.583), rollerSubsystem.c_rotateArmDownCommand()))
+                      .andThen(new ParallelDeadlineGroup(new RunCommand(() -> driveSubsystem.arcadeDrive(-0.5, 0), driveSubsystem).withTimeout(0.583/(double)2), rollerSubsystem.c_rotateArmDownCommand()))
                       .andThen(new RunCommand(() -> driveSubsystem.arcadeDrive(0, 0.5), driveSubsystem).withTimeout(0.77))
-                      .andThen(new ParallelDeadlineGroup(new RunCommand(() -> driveSubsystem.tankDrive(0.838754514641, 0.910853740518)).withTimeout(5), rollerSubsystem.c_rotateArmDownCommand()))
+                      .andThen(new ParallelDeadlineGroup(new RunCommand(() -> driveSubsystem.tankDrive(0.838754514641, 0.910853740518)).withTimeout(5/(double)2), rollerSubsystem.c_rotateArmDownCommand()))
                       .andThen(rollerSubsystem.c_rollerIntakeCommand().withTimeout(0.5));
   }
 
   public Command getRightAutonomousCommand(){
-    return new RunCommand(() -> driveSubsystem.arcadeDrive(0.5, 0), driveSubsystem).withTimeout(2.47794117647)
+    return new RunCommand(() -> driveSubsystem.arcadeDrive(0.5, 0), driveSubsystem).withTimeout(2.47794117647/(double)2)
                       .andThen(new RunCommand(() -> driveSubsystem.arcadeDrive(0, 0.5), driveSubsystem).withTimeout(0.77))
-                      .andThen(new ParallelDeadlineGroup(new RunCommand(()-> driveSubsystem.arcadeDrive(0.5, 0), driveSubsystem).withTimeout(2.44117647059), rollerSubsystem.c_rotateArmUpCommand()))
+                      .andThen(new ParallelDeadlineGroup(new RunCommand(()-> driveSubsystem.arcadeDrive(0.5, 0), driveSubsystem).withTimeout(2.44117647059/(double)2), rollerSubsystem.c_rotateArmUpCommand()))
                       .andThen(new ParallelDeadlineGroup(rollerSubsystem.c_rollerReverseIntakeCommand().withTimeout(0.5)))
-                      .andThen(new ParallelDeadlineGroup(new RunCommand(() -> driveSubsystem.arcadeDrive(-0.5, 0), driveSubsystem).withTimeout(0.583), rollerSubsystem.c_rotateArmDownCommand()))
+                      .andThen(new ParallelDeadlineGroup(new RunCommand(() -> driveSubsystem.arcadeDrive(-0.5, 0), driveSubsystem).withTimeout(0.583/(double)2), rollerSubsystem.c_rotateArmDownCommand()))
                       .andThen(new RunCommand(() -> driveSubsystem.arcadeDrive(0, 0.5), driveSubsystem).withTimeout(0.77))
-                      .andThen(new ParallelDeadlineGroup(new RunCommand(() -> driveSubsystem.tankDrive(0.838754514641, 0.910853740518)).withTimeout(5), rollerSubsystem.c_rotateArmDownCommand()))
+                      .andThen(new ParallelDeadlineGroup(new RunCommand(() -> driveSubsystem.tankDrive(0.838754514641, 0.910853740518)).withTimeout(5/(double)2), rollerSubsystem.c_rotateArmDownCommand()))
                       .andThen(rollerSubsystem.c_rollerIntakeCommand().withTimeout(0.5));
   }
 }

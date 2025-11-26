@@ -19,7 +19,7 @@ public class Configs {
         .smartCurrentLimit(40)
         .softLimit.reverseSoftLimit(0)
         .reverseSoftLimitEnabled(true)
-        .forwardSoftLimit(3)
+        .forwardSoftLimit(3.5)
         .forwardSoftLimitEnabled(true);
 
     }  

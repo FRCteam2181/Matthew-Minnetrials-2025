@@ -81,7 +81,7 @@ public class CANRollerSubsystem extends SubsystemBase {
       return this.startEnd(
           // When the command is initialized, set the wheels to the intake speed values
           () -> {
-            armMotor.set(-0.1);
+            armMotor.set(0.1);
           },
           // When the command stops, stop the wheels
           () -> {
@@ -93,7 +93,7 @@ public class CANRollerSubsystem extends SubsystemBase {
       return this.startEnd(
           // When the command is initialized, set the wheels to the intake speed values
           () -> {
-            armMotor.set(0.1);
+            armMotor.set(-0.1);
           },
           // When the command stops, stop the wheels
           () -> {
