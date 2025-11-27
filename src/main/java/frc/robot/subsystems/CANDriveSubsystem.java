@@ -55,17 +55,17 @@ public class CANDriveSubsystem extends SubsystemBase {
 
 
     // configs
-    leftLeader.configVoltageCompSaturation(12);
-    leftLeader.enableVoltageCompensation(true);
+    leftFront.configVoltageCompSaturation(12);
+    leftFront.enableVoltageCompensation(true);
 
-    leftFollower.configVoltageCompSaturation(12);
-    leftFollower.enableVoltageCompensation(true);
+    leftRear.configVoltageCompSaturation(12);
+    leftRear.enableVoltageCompensation(true);
 
-    rightLeader.configVoltageCompSaturation(12);
-    rightLeader.enableVoltageCompensation(true);
+    rightFront.configVoltageCompSaturation(12);
+    rightFront.enableVoltageCompensation(true);
 
-    rightFollower.configVoltageCompSaturation(12);
-    rightFollower.enableVoltageCompensation(true);
+    rightRear.configVoltageCompSaturation(12);
+    rightRear.enableVoltageCompensation(true);
 
     // Put the front motors into the differential drive object. This will control all 4 motors with
     // the rears set to follow the fronts
